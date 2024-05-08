@@ -36,11 +36,6 @@
                 minZoom: config.map_min_zoom
             }).addTo(map);
 
-            L.Control.geocoder().on('markgeocode', function(e) {
-                setMarker(e.geocode.center.lat,e.geocode.center.lng)
-            }).addTo(map);
-
-
             L.control.locate({
                 icon: 'icon-pin',
                 //strings: {title: translation['btn-locate']}
@@ -51,7 +46,11 @@
                 limit: 5,
                 lite: 1,
             };
+            var control = L.Control.openCageSearch(options).addTo(map);
 
+            control.setMarker(function (result) {
+                setMarker(result.center.lat, result.center.lng);
+            });
 
             hideMap();
 
