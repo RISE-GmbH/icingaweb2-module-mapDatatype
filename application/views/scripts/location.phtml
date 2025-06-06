@@ -1,8 +1,17 @@
-<style>
-    .leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
-        background-image: url(img/map/marker-icon.png);
-    }
-</style>
+<?php
+
+use Icinga\Util\Csp;
+$style = new \ipl\Web\Style();
+$style->setNonce(Csp::getStyleNonce());
+$style->add('.leaflet-default-icon-path',['background-image'=>'url(img/map/marker-icon.png)']);
+$style->add('.b-width-1px',['border-width'=>'1px']);
+$style->add('.map-container',['display'=>'block','width'=>'100%']);
+$style->add('.map-home',['height'=>'250px!important','margin-top'=>'0px!important']);
+$style->add('.map-home-p',['text-align'=>'right','margin-top'=>'5px','max-width'=>'unset']);
+
+
+echo $style;
+?>
 
 <dt>
     <?= $this->formLabel($this->element->getName(), $this->element->getLabel()); ?>
@@ -18,18 +27,17 @@
         } ?>/>
     <?php
     if(preg_match("~\(\d+?\)~",$this->element->getLabel()) == false ){?>
-        <button type="button" id="director-map-btn-globe" class="control-button" style="border-width: 1px;">
+        <button type="button" id="director-map-btn-globe" class="control-button b-width-1px">
             <i class="icon-globe"></i>
         </button>
-        <div id="col1" class="container icinga-module module-map" data-icinga-module="map"
-             style="display: block; width: 100%;">
+        <div class="container icinga-module module-mapDatatype module-map map-container" data-icinga-module="mapDatatype">
 
-            <div id="map-director" class="map map-home" style="height: 250px; margin-top: 0px"></div>
-            <p style="margin-top: 5px; text-align:right; max-width: unset;">
-                <button type="button" id="director-map-btn-save" class="control-button" style="border-width: 1px;">
+            <div id="map-director" class="map map-home"></div>
+            <p class="map-home-p">
+                <button type="button" id="director-map-btn-save" class="control-button b-width-1px"">
                     <i class="icon-ok"></i>
                 </button>
-                <button type="button" id="director-map-btn-cancel" class="control-button" style="border-width: 1px;">
+                <button type="button" id="director-map-btn-cancel" class="control-button b-width-1px">
                     <i class="icon-cancel"></i>
                 </button>
             </p>
@@ -39,20 +47,6 @@
     <?php if (count($this->element->getMessages()) > 0): ?>
         <?= $this->formErrors($this->element->getMessages()); ?>
     <?php endif; ?>
-        <script type="text/javascript">
-            var interval = setInterval(function () {
-                if (typeof icinga == 'undefined') return;
-                clearInterval(interval);
-
-                var modulname = "mapDatatype";
-                if (icinga.isLoadedModule(modulname)) {
-                    icinga.modules.mapDatatype.initialize();
-                } else {
-                    icinga.loadModule(modulname)
-                }
-
-            }, 10);
-        </script>
 
     <?php
     }

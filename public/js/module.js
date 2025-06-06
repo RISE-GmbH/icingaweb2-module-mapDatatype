@@ -6,6 +6,11 @@
 
     MapDatatype.prototype = {
         initialize: function () {
+            this.module.on('rendered', this.rendered);
+
+
+        },
+        rendered: function(event) {
             // Fetch map config
             var that = this;
             $.getJSON(icinga.config.baseUrl + '/map/config/fetch?type=director', this._newMap).fail(function (jqxhr, textStatus, error) {
@@ -31,10 +36,15 @@
 
             L.tileLayer(config.tile_url, {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-                maxNativeZoom: config.map_max_native_zoom,
-                maxZoom: config.map_max_zoom,
-                minZoom: config.map_min_zoom
+                maxNativeZoom: config.max_native_zoom,
+                maxZoom: config.max_zoom,
+                minZoom: config.min_zoom
             }).addTo(map);
+
+            L.Control.geocoder().on('markgeocode', function(e) {
+                setMarker(e.geocode.center.lat,e.geocode.center.lng)
+            }).addTo(map);
+
 
             L.control.locate({
                 icon: 'icon-pin',
@@ -46,11 +56,7 @@
                 limit: 5,
                 lite: 1,
             };
-            var control = L.Control.openCageSearch(options).addTo(map);
 
-            control.setMarker(function (result) {
-                setMarker(result.center.lat, result.center.lng);
-            });
 
             hideMap();
 
